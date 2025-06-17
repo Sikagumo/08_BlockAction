@@ -202,9 +202,10 @@ bool EnemyBase::GetIsActive(void) const
 {
 	bool ret = true;
 
-	if (!GetIsCollision() &&
-		hp_ <= 0.0f)
+	if (!GetIsCollision() && hp_ <= 0.0f &&
+		state_ == STATE::END)
 	{
+		// “G–³Œøó‘Ô
 		ret = false;
 	}
 

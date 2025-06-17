@@ -121,6 +121,7 @@ public:
 	// ó‘Ô‘JˆÚ
 	void ChangeState(STATE state);
 
+
 	/// <summary>
 	/// “G’eŠÛæ“¾ˆ—
 	/// </summary>

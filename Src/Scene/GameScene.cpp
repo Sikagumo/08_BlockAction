@@ -9,6 +9,7 @@
 #include "../Object/Shot/ShotBase.h"
 #include "../Utility/AsoUtility.h"
 #include "../Manager/SceneManager.h"
+#include "../Manager/InputManager.h"
 #include "../Manager/EnemyManager.h"
 #include "../Common/Grid.h"
 #include "../Common/UI/HpManager.h"
@@ -59,14 +60,11 @@ void GameScene::Init(void)
 
 void GameScene::Update(void)
 {
-	if (enemyManager_->GetWaveEnd())
-	{
-		state_ = GAME_STATE::GAME_CLEAR;
+	// 状態未割当時は処理終了
+	if (state_ == GAME_STATE::NONE) return;
 
-		player_->SetPState(Player::STATE::VICTORY);
-	}
 
-	if (player_->GetPState() != Player::STATE::END)
+	if (state_ == GAME_STATE::GAME_ACTIVE)
 	{
 		player_->Update();
 
@@ -74,19 +72,22 @@ void GameScene::Update(void)
 
 		// 衝突判定
 		Collision();
+
+		hpManager_->Update();
+		atkManager_->Update();
+
+		// ゲーム終了処理
+		ProcessGameEnd();
 	}
 
 	else
 	{
-		// タイトルシーンに戻る
-		if (CheckHitKey(KEY_INPUT_SPACE))
+		if (InputManager::GetInstance().IsTrgDown(KEY_INPUT_SPACE))
 		{
+			// タイトルシーンに戻る
 			SceneManager::GetInstance().ChangeScene(SceneManager::SCENE_ID::TITLE);
 		}
 	}
-
-	hpManager_->Update();
-	atkManager_->Update();
 }
 
 void GameScene::Draw(void)
@@ -182,6 +183,31 @@ void GameScene::Collision(void)
 
 	// 敵とプレイヤーの攻撃の衝突
 	CollisionWeapon();
+}
+
+void GameScene::ProcessGameEnd(void)
+{
+	// プレイヤーのHPが０の時
+	if (player_->GetHp() <= 0)
+	{
+		// プレイヤーが終了状態の時
+		if (player_->GetPState() == Player::STATE::END)
+		{
+			// ゲームオーバー状態にする
+			state_ = GAME_STATE::GAME_OVER;
+		}
+	}
+
+	// 敵を全て撃破したとき、
+	else if (enemyManager_->GetWaveEnd())
+	{
+		// ゲームクリア状態にする
+		state_ = GAME_STATE::GAME_CLEAR;
+
+		// プレイヤーに勝利演出を行わせる
+		player_->SetPState(Player::STATE::VICTORY);
+	}
+
 }
 
 void GameScene::CollisionStage(void)

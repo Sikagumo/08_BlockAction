@@ -105,6 +105,10 @@ private:
 	/// </summary>
 	void Collision(void);
 
+	/// <summary>
+	/// ゲーム終了の処理
+	/// </summary>
+	void ProcessGameEnd(void);
 
 	/// <summary>
 	/// ステージブロックとプレイヤーの衝突

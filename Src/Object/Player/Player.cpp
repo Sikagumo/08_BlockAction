@@ -3,12 +3,12 @@
 #include <string>
 #include "../../Application.h"
 #include "../../Utility/AsoUtility.h"
+#include "../../Manager/Camera.h"
 #include "../../Manager/InputManager.h"
 #include "../../Manager/SceneManager.h"
 #include "../Weapon/WeaponBase.h"
 #include "../Weapon/WeaponPunch.h"
 #include "../Weapon/WeaponAxe.h"
-#include "../../Manager/Camera.h"
 #include "../AnimationController.h"
 
 
@@ -558,6 +558,12 @@ void Player::ChangeState(STATE state)
 		case STATE::VICTORY:
 		{
 			ChangeVictory();
+		}
+		break;
+		
+		case STATE::END:
+		{
+			
 		}
 		break;
 	}
