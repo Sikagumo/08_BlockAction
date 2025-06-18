@@ -32,6 +32,9 @@ public:
 	static constexpr int GAME_END_X = -600;
 	static constexpr int GAME_END_Y = -450;
 
+	// 重力
+	static constexpr float GRAVITY = 0.8f;
+
 
 	/// <summary>
 	/// デフォルトコンストラクタ

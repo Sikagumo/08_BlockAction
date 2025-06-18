@@ -3,6 +3,7 @@
 #include <string>
 #include "../../Application.h"
 #include "../../Utility/AsoUtility.h"
+#include "../../Scene/GameScene.h"
 #include "../../Manager/Camera.h"
 #include "../../Manager/InputManager.h"
 #include "../../Manager/SceneManager.h"
@@ -249,6 +250,7 @@ void Player::SetKnockBack(VECTOR dirXZ, float jumpPow)
 	// 吹っ飛ばし状態化
 	ChangeState(STATE::KNOCKBACK);
 
+	
 	knockDir_ = dirXZ;
 
 	jumpPow_ = jumpPow;
@@ -258,6 +260,10 @@ void Player::SetKnockBack(VECTOR dirXZ, float jumpPow)
 
 	// 点滅カウンタ初期化
 	knockCnt_ = 0;
+
+	// 攻撃された方向にプレイヤーを向かせる
+	angles_.y = atan2(dirXZ.x, dirXZ.z);
+	MV1SetRotationXYZ(modelId_, angles_);
 }
 
 void Player::SetDamage(int damage)
@@ -433,7 +439,7 @@ void Player::ProcessJump(void)
 	InputManager& ins = InputManager::GetInstance();
 
 	// 重力を加算(一定を制限)
-	jumpPow_ -= GRAVITY;
+	jumpPow_ -= GameScene::GRAVITY;
 
 
 	if (ins.IsTrgDown(KEY_INPUT_SPACE) && !isJump_)
@@ -519,11 +525,11 @@ void Player::UpdateKnockBack(void)
 	knockCnt_++;
 
 	// ジャンプさせる
-	jumpPow_ -= GRAVITY;
+	jumpPow_ -= GameScene::GRAVITY;
 	pos_.y += jumpPow_;
 
 	// 吹っ飛ばし処理
-	VECTOR knockVec = VScale(knockDir_, 20.0f);
+	VECTOR knockVec = VScale(knockDir_, KNOCK_POWER);
 	pos_ = VAdd(pos_, knockVec);
 	MV1SetPosition(modelId_, pos_);
 }

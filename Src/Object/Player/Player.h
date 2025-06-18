@@ -93,6 +93,10 @@ public:
 	// 移動スピード
 	static constexpr float SPEED_MOVE = 12.5f;
 
+	// 吹っ飛ばされる力
+	static constexpr float KNOCK_POWER = 20.0f;
+
+
 	// アニメーション速度
 	static constexpr float SPEED_ANIM = 30.0f;
 
@@ -105,9 +109,6 @@ public:
 
 	// ジャンプ待機
 	static constexpr float JUMP_WAIT_TIME = 1.0f;
-
-	// 重力
-	static constexpr float GRAVITY = 0.8f;
 
 	// 地面衝突線分の当たり判定の長さ
 	static constexpr float COLLISION_LEN = 10.0f;
