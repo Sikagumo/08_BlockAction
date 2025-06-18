@@ -142,17 +142,51 @@ bool BlockManager::IsCollisionLine(VECTOR topPos, VECTOR downPos, MV1_COLL_RESUL
 
 void BlockManager::LoadMapCsvData(void)
 {
+	// マップチップ名
+	int chipNo = -1;
+
+	// ブロックモデルのハンドル
+	int baseModelId = -1;
+
 	// ファイルの読込
 	std::ifstream ifs = std::ifstream(Application::PATH_MAP_DATA);
 
 	// ファイル読み込み失敗
-	if (!ifs) return;
+	if (!ifs)
+	{
+		// 読み込み失敗時、空にする
+		chipNo = static_cast<int>(Block::TYPE::BLANK);
+
+		// 空のブロックを割り当て
+		baseModelId = baseBlockModelIds_[chipNo];
+
+		// int型をキャストして enum classに変換
+		Block::TYPE type = static_cast<Block::TYPE>(chipNo);
+
+
+		// ２次元配列にブロッククラスのポインタを格納
+		for (int z = 0; z < NUM_BLOCK_Z; z++)
+		{
+			for (int x = 0; x < NUM_BLOCK_X; x++)
+			{
+				// 空のブロックを生成
+				Block* block = new Block();
+				block->Create(type, baseModelId, x, z);
+
+				blocks_[z][x] = block;
+			}
+		}
+#ifdef _DEBUG
+		OutputDebugString("\nステージのcsvファイルがありません。\nもう一度、マップデータファイルを確認してください\n");
+#endif
+
+		return;
+	}
 
 	// ファイルを１行ずつ読み込む
 	std::string line; // 1行の文字情報
 	std::vector<std::string> strSplit; // 1行を1文字の動的配列に分割
 
-	int chipNo = -1;
 	int z	   = NUM_BLOCK_Z - 1;
 
 	while (getline(ifs, line))
@@ -163,13 +197,15 @@ void BlockManager::LoadMapCsvData(void)
 		int size = strSplit.size();
 
 #pragma region plusAlpha
+
 		// 横の要素数が生成最大数を超えたとき、制限
 		if (size > NUM_BLOCK_X) size = NUM_BLOCK_X;
 #pragma endregion
 
+
 		for (int x = 0; x < size; x++)
 		{
-#pragma region PlusAlpha
+#pragma region PlusAlpha */
 			if (strSplit[x] == "-1" ||
 				chipNo > static_cast<int>(Block::TYPE::BLANK) ||
 				chipNo <= -1)
@@ -201,7 +237,7 @@ void BlockManager::LoadMapCsvData(void)
 			Block::TYPE type = static_cast<Block::TYPE>(chipNo);
 
 			// 先に読み込んでいたモデルのハンドルIDを取得する
-			int baseModelId = baseBlockModelIds_[chipNo];
+			baseModelId = baseBlockModelIds_[chipNo];
 
 			// ブロックを生成
 			Block* block = new Block();
@@ -210,6 +246,7 @@ void BlockManager::LoadMapCsvData(void)
 			// ２次元配列にブロッククラスのポインタを格納
 			blocks_[z][x] = block;
 		}
+
 		z--;
 	}
 }

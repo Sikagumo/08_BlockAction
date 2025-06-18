@@ -9,7 +9,7 @@ const std::string Application::PATH_DATA = "Data/";
 const std::string Application::PATH_IMAGE = PATH_DATA + "Image/";
 const std::string Application::PATH_MODEL = PATH_DATA + "Model/";
 const std::string Application::PATH_EFFECT = PATH_DATA + "Effect/";
-const std::string Application::PATH_MAP_DATA = PATH_DATA + "MapData/MapData_.csv";
+const std::string Application::PATH_MAP_DATA = PATH_DATA + "MapData/BlockActionData.csv";
 
 void Application::CreateInstance(void)
 {
@@ -29,7 +29,7 @@ void Application::Init(void)
 {
 
 	// アプリケーションの初期設定
-	SetWindowText("BlockAction");
+	SetWindowText("2416026 中川原 諒");
 
 	// ウィンドウサイズ
 	SetGraphMode(SCREEN_SIZE_X, SCREEN_SIZE_Y, 32);

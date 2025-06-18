@@ -7,8 +7,8 @@ class BlockManager
 {
 public:
 	// ブロックの数(マップのサイズ)
-	static constexpr int NUM_BLOCK_X = 30;
-	static constexpr int NUM_BLOCK_Z = 30;
+	static constexpr int NUM_BLOCK_X = 32;
+	static constexpr int NUM_BLOCK_Z = 32;
 
 	// 1ブロックあたりのサイズ
 	static constexpr float SIZE_BLOCK = 100.0f;
