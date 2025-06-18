@@ -29,8 +29,8 @@ public:
 	const std::string PATH_GAME_CLEAR  = (Application::PATH_IMAGE + "Gameclear.png");
 	const std::string PATH_BACK_GROUND = (Application::PATH_IMAGE + "Background.png");
 
-	static constexpr int GAME_END_X = 600;
-	static constexpr int GAME_END_Y = 327;
+	static constexpr int GAME_END_X = -600;
+	static constexpr int GAME_END_Y = -450;
 
 
 	/// <summary>

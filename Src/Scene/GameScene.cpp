@@ -63,11 +63,12 @@ void GameScene::Update(void)
 	// 状態未割当時は処理終了
 	if (state_ == GAME_STATE::NONE) return;
 
+	// プレイヤー更新処理
+	player_->Update();
+
 
 	if (state_ == GAME_STATE::GAME_ACTIVE)
 	{
-		player_->Update();
-
 		enemyManager_->Update();
 
 		// 衝突判定
@@ -114,8 +115,8 @@ void GameScene::Draw(void)
 	if (state_ != GAME_STATE::GAME_ACTIVE)
 	{
 		int image = -1;
-		int x = (Application::SCREEN_SIZE_X / 2) - (GAME_END_X / 2);
-		int y = (Application::SCREEN_SIZE_Y / 2) - (GAME_END_Y / 2);
+		int x = (Application::SCREEN_SIZE_X / 2) + (GAME_END_X / 2);
+		int y = (Application::SCREEN_SIZE_Y / 2) + (GAME_END_Y / 2);
 
 		if (state_ == GAME_STATE::GAME_CLEAR)
 		{

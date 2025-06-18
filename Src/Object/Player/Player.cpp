@@ -140,7 +140,7 @@ void Player::Update(void)
 
 			if (animController_->IsEnd())
 			{
-				ChangeState(STATE::END);
+				//ChangeState(STATE::END);
 			}
 		}
 		break;
@@ -150,6 +150,13 @@ void Player::Update(void)
 
 		}
 		break;
+	}
+
+	if (state_ == STATE::STANDBY ||
+		state_ == STATE::KNOCKBACK ||
+		state_ == STATE::ATTACK)
+	{
+		weaponUse_->Update();
 	}
 
 	// リスポーン処理
@@ -269,7 +276,7 @@ void Player::SetDamage(int damage)
 
 void Player::SetPState(STATE state)
 {
-	state_ = state;
+	ChangeState(state);
 }
 
 int Player::GetHp(void)
@@ -523,8 +530,6 @@ void Player::UpdateKnockBack(void)
 
 void Player::UpdateAttack(void)
 {
-	weaponUse_->Update();
-
 	if (animController_->IsEnd())
 	{
 		ChangeState(STATE::STANDBY);
@@ -535,6 +540,7 @@ void Player::UpdateAttack(void)
 void Player::ChangeState(STATE state)
 {
 	state_ = state;
+
 	switch (state_)
 	{
 		case STATE::KNOCKBACK:
@@ -599,5 +605,11 @@ void Player::ChangeDead(void)
 void Player::ChangeVictory(void)
 {
 	// アニメーション再生
-	animController_->Play(static_cast<int>(ANIM_TYPE::WAVE), false);
+	animController_->Play(static_cast<int>(ANIM_TYPE::DANCE_1));
+
+	//animController_->Play(static_cast<int>(ANIM_TYPE::WAVE), false);
+
+	// 正面に向きを変える
+	angles_.y = AsoUtility::Deg2Rad(0);
+	MV1SetRotationXYZ(modelId_, angles_);
 }
