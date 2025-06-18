@@ -110,15 +110,6 @@ void SceneManager::Update(void)
 
 void SceneManager::Draw(void)
 {
-
-	// 描画先グラフィック領域の指定
-	// (３Ｄ描画で使用するカメラの設定などがリセットされる)
-	SetDrawScreen(DX_SCREEN_BACK);
-
-	// 画面を初期化
-	ClearDrawScreen();
-
-
 	// カメラの前描画処理
 	camera_->SetBeforeDraw();
 

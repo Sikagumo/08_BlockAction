@@ -1,7 +1,9 @@
-#include <DxLib.h>
-#include "Manager/InputManager.h"
-#include "Manager/SceneManager.h"
 #include "Application.h"
+#include <DxLib.h>
+#include "./\Manager/InputManager.h"
+#include "./Manager/SceneManager.h"
+#include "./Common/FrameRate.h"
+
 
 Application* Application::instance_ = nullptr;
 
@@ -61,10 +63,14 @@ void Application::Init(void)
 	// シーン管理初期化
 	SceneManager::CreateInstance();
 
+	// FPS制御マネージャ初期化
+	FrameRate::CreateInstance();
+
 }
 
 void Application::Run(void)
 {
+	FrameRate& fps = FrameRate::GetInstance();
 
 	InputManager& inputManager = InputManager::GetInstance();
 	SceneManager& sceneManager = SceneManager::GetInstance();
@@ -72,26 +78,56 @@ void Application::Run(void)
 	// ゲームループ
 	while (ProcessMessage() == 0 && CheckHitKey(KEY_INPUT_ESCAPE) == 0)
 	{
+		// FPS更新
+		fps.Update();
 
-		inputManager.Update();
-		sceneManager.Update();
+		// フレームレート制御
+		if (fps.GetLimitFrameRate() == false)
+		{
+			fps.SetFrameRate();
 
-		sceneManager.Draw();
+			inputManager.Update();
+			sceneManager.Update();
 
-		ScreenFlip();
+			// 描画処理
+			Draw();
+		}
+	}
+}
 
+void Application::Draw()
+{
+	// 描画先グラフィック領域の指定
+	// (３Ｄ描画で使用するカメラの設定などがリセットされる)
+	SetDrawScreen(DX_SCREEN_BACK);
+
+	// 画面を初期化
+	ClearDrawScreen();
+
+
+	// シーン描画
+	SceneManager::GetInstance().Draw();
+
+
+	if (CheckHitKey(KEY_INPUT_TAB))
+	{
+		FrameRate::GetInstance().Draw();
 	}
 
+	ScreenFlip();
 }
 
 void Application::Destroy(void)
 {
-
 	// DxLib終了
 	if (DxLib_End() == -1)
 	{
 		isReleaseFail_ = true;
 	}
+
+
+	// FPS管理解放
+	FrameRate::GetInstance().Release();
 
 	// シーン管理解放
 	SceneManager::GetInstance().Destroy();

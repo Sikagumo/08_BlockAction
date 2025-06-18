@@ -51,6 +51,7 @@ private:
 	// 解放失敗
 	bool isReleaseFail_;
 
+
 	// デフォルトコンストラクタをprivateにして、
 	// 外部から生成できない様にする
 	Application(void);
@@ -60,5 +61,11 @@ private:
 
 	// デストラクタも同様
 	~Application(void) = default;
+
+
+	/// <summary>
+	/// 描画処理
+	/// </summary>
+	void Draw(void);
 
 };
