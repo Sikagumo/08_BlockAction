@@ -6,25 +6,25 @@ class ShotRock : public ShotBase
 public:
 
 	// スケール
-	static constexpr float SCALE = 4.0f;
+	static constexpr float SCALE = 3.5f;
 
 	// 速度
 	static constexpr float SPEED_START = 15.0f;
 
 	// 速度減少値
-	static constexpr float SPEED_DEC = 3.5f;
+	static constexpr float SPEED_DEC = 4.0f;
 
 	// 生存時間
 	static constexpr float TIME_ALIVE = 4.5f;
 
 	// 半径
-	static constexpr float RADIUS = 350.0f;
+	static constexpr float RADIUS = 275.0f;
 
 	// 上方向の吹っ飛ばし力
 	static constexpr float UP_POWER_START = 23.0f;
 
 	// 吹っ飛ばし減少値
-	static constexpr float UP_POWER_DEC = 2.0f;
+	static constexpr float UP_POWER_DEC = 5.0f;
 
 
 	/// <summary>

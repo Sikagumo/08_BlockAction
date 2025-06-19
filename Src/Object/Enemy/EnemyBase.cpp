@@ -266,8 +266,14 @@ std::vector<ShotBase*> EnemyBase::GetEShots(void)
 
 void EnemyBase::SetDamage(int damage)
 {
-	// ダメージが０の時、処理終了
-	if (damage == 0) return;
+	// ダメージが０の時、当たり判定がない時
+	if (damage == 0 ||
+		!GetIsCollision() ||
+		damageTime_ > 0.0f)
+	{
+		// 処理終了
+		return;
+	}
 
 	// ダメージが負の時、正の値に戻す
 	int num = ((damage < 0) ? -damage : damage);
@@ -275,11 +281,18 @@ void EnemyBase::SetDamage(int damage)
 	// 被ダメージ処理
 	hp_ -= num;
 
+#ifdef _DEBUG
+	OutputDebugString("\n攻撃");
+#endif
 	// HPの値制限
 	if (hp_ <= 0)
 	{
 		hp_ = 0;
 		ChangeState(STATE::DEAD_REACT);
+
+#ifdef _DEBUG
+		OutputDebugString("\n");
+#endif
 	}
 	else if (state_ != STATE::ATTACK)
 	{

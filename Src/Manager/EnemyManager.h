@@ -97,6 +97,9 @@ private:
 	void UpdateWave03(void);
 	void UpdateWaveEnd(void);
 
+	void ChangeWave02(void);
+	void ChangeWave03(void);
+
 	/// <summary>
 	/// “G‚Ì“Ç‚İ‚İˆ—
 	/// </summary>

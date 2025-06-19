@@ -11,7 +11,7 @@ public:
 	static constexpr int MAX_HP = 3;
 
 	// 移動速度
-	static constexpr float SPEED = 3.75f;
+	static constexpr float SPEED = 3.0f;
 
 	// サイズ
 	static constexpr float SCALE = 0.75f;

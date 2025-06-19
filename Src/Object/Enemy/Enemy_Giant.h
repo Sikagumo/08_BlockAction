@@ -9,7 +9,7 @@ class Enemy_Giant : public EnemyBase
 public:
 
 	// 最大HP
-	static constexpr int MAX_HP = 6;
+	static constexpr int MAX_HP = 5;
 
 	// サイズ
 	static constexpr float SCALE = 1.85f;
@@ -31,6 +31,9 @@ public:
 
 	// 縦発射位置調整
 	static constexpr float SHOT_Y_OFFSET = 50.0f;
+
+	// 被ダメージ時の最大硬直時間
+	static constexpr float DAMAGE_MAX_TIME = 1.5f;
 
 
 	Enemy_Giant(void);
@@ -56,6 +59,8 @@ protected:
 	void ChangeStandby(void)override;
 
 	void ChangeAttack(void)override;
+
+	void ChangeHitReact(void)override;
 
 	// 状態別更新
 	void UpdateStandby(void)override;

@@ -205,11 +205,28 @@ void EnemyManager::ChangeWave(void)
 	{
 		curWave++;
 	}
-	if (curWave == maxWave)
+	if (curWave >= maxWave)
 	{
 		int temp = 0;
 	}
+
+	// ウェーブ割り当て
 	wave_ = static_cast<WAVE>(curWave);
+
+	switch (wave_)
+	{
+		case WAVE::WAVE02:
+		{
+			ChangeWave02();
+		}
+		break;
+		
+		case WAVE::WAVE03:
+		{
+			ChangeWave03();
+		}
+		break;
+	}
 }
 
 void EnemyManager::UpdateWave01(void)
@@ -223,10 +240,6 @@ void EnemyManager::UpdateWave01(void)
 
 	if (timeWave_ >= WAVE_TIME_STATE)
 	{
-		timeWave_ = 0.0f;
-
-		timeSpawn_ = SPAWN_WAVE_02;
-
 		ChangeWave();
 	}
 }
@@ -260,12 +273,7 @@ void EnemyManager::UpdateWave02(void)
 		// 全撃破時、次のウェーブに遷移
 		if (isKnock)
 		{
-			timeWave_ = 0.0f;
-
 			ChangeWave();
-
-			// ジャイアント1体生成
-			SpawnEnemy(static_cast<int>(ENEMY_TYPE::GIANT));
 		}
 	}
 }
@@ -293,6 +301,22 @@ void EnemyManager::UpdateWave03(void)
 void EnemyManager::UpdateWaveEnd(void)
 {
 
+}
+
+
+void EnemyManager::ChangeWave02(void)
+{
+	timeWave_ = 0.0f;
+
+	timeSpawn_ = SPAWN_WAVE_02;
+}
+
+void EnemyManager::ChangeWave03(void)
+{
+	timeWave_ = 0.0f;
+
+	// ジャイアント1体生成
+	SpawnEnemy(static_cast<int>(ENEMY_TYPE::GIANT));
 }
 
 

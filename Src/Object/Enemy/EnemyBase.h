@@ -71,7 +71,7 @@ public:
 	static constexpr COLOR_F COLOR_DAMAGE = { 1.0f, 0.0f, 0.0f, 1.0f };
 
 	// ダメージ点滅の間隔
-	static constexpr int DAMAGE_TERM = 5;
+	static constexpr int DAMAGE_TERM = 3;
 
 	// 被ダメージ時の最大硬直時間
 	static constexpr float DAMAGE_MAX_TIME = 1.1f;

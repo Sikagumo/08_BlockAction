@@ -58,6 +58,14 @@ void Enemy_Giant::ChangeAttack(void)
 	animController_->Play(static_cast<int>(ANIM_TYPE::ATTACK), false);
 }
 
+void Enemy_Giant::ChangeHitReact(void)
+{
+	damageTime_ = DAMAGE_MAX_TIME;
+
+	// 被ダメージ時アニメーション再生
+	animController_->Play(static_cast<int>(ANIM_TYPE::HIT_REACT), false);
+}
+
 
 void Enemy_Giant::UpdateStandby(void)
 {

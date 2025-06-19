@@ -352,13 +352,13 @@ void Player::ProcessMove(void)
 	VECTOR dirVec = AsoUtility::VECTOR_ZERO;
 
 	bool isInput = false; // “ü—Í”»’èƒtƒ‰ƒO
-
+	VECTOR move = {}; // ˆÚ“®•ûŒü
 
 	if (input.IsNew(KEY_INPUT_W))
 	{
 		moveVec = VAdd(moveVec, AsoUtility::DIR_F);
 
-		//moveDir_ = AsoUtility::DIR_F;
+		move = VAdd(move, AsoUtility::DIR_F);
 		isInput = true;
 	}
 	
@@ -366,7 +366,8 @@ void Player::ProcessMove(void)
 	{
 		moveVec = VAdd(moveVec, AsoUtility::DIR_B);
 
-		//moveDir_ = AsoUtility::DIR_B;
+		move = VAdd(move, AsoUtility::DIR_B);
+
 		isInput = true;
 	}
 	
@@ -374,16 +375,24 @@ void Player::ProcessMove(void)
 	{
 		moveVec = VAdd(moveVec, AsoUtility::DIR_L);
 
-		//moveDir_ = AsoUtility::DIR_L;
+		move = VAdd(move, AsoUtility::DIR_L);
 		isInput = true;
 	}
 
 	if (input.IsNew(KEY_INPUT_D))
 	{
 		moveVec = VAdd(moveVec, AsoUtility::DIR_R);
-		//moveDir_ = AsoUtility::DIR_R;
+		move = VAdd(move, AsoUtility::DIR_R);
 		isInput = true;
 	}
+
+	// ˆÚ“®‚µ‚Ä‚¢‚È‚¢‚ÍŠ„‚è“–‚Ä‚È‚¢
+	if (!AsoUtility::EqualsVZero(move)) 
+	{
+		// ˆÚ“®•ûŒüŠ„‚è“–‚Ä
+		moveDir_ = move;
+	}
+
 
 
 	// ˆÚ“®—Ê‚ª‚O‚Å‚Í‚È‚¢AˆÚ“®
@@ -440,10 +449,6 @@ void Player::ProcessMove(void)
 
 		VECTOR dir = VNorm(dirVec);
 		dir.y = angles_.y;
-
-
-		// ˆÚ“®•ûŒüŠ„‚è“–‚Ä
-		moveDir_ = dir;
 	}
 	else if (!isJump_)
 	{
