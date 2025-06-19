@@ -8,7 +8,7 @@ class Enemy_Demon : public EnemyBase
 public:
 
 	// Н≈СеHP
-	static constexpr int MAX_HP = 3 - 3;
+	static constexpr int MAX_HP = 3;
 
 	// ИЏУЃСђУx
 	static constexpr float SPEED = 3.75f;

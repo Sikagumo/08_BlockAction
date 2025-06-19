@@ -38,7 +38,7 @@ void WeaponAxe::Use(VECTOR pos, VECTOR dir)
 
 	jumpPow_ = JUMP_POW;
 
-	angles_.y = atan2(moveDir_.x, moveDir_.z);
+	angles_.y = atan2f(moveDir_.x, moveDir_.z);
 
 	angles_.x = 0.0f;
 	angles_.y += AsoUtility::Deg2Rad(MODEL_ANGLE_Y);

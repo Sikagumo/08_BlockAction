@@ -187,6 +187,9 @@ public:
 	void SetPState(STATE state);
 
 
+	void SetIsJump(bool flag);
+
+
 	/// <summary>
 	/// 現在HP取得
 	/// </summary>
@@ -274,6 +277,17 @@ private:
 	// 待機時間(+@)
 	float waitTime_;
 
+
+	/// <summary>
+	/// 武器初期化
+	/// </summary>
+	void InitWeapon(void);
+
+	/// <summary>
+	/// アニメーション初期化
+	/// </summary>
+	void InitAnim(void);
+	
 	/// <summary>
 	/// 待機処理更新処理
 	/// </summary>

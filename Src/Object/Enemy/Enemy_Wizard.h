@@ -8,7 +8,7 @@ class Enemy_Wizard : public EnemyBase
 public:
 
 	// ç≈ëÂHP
-	static constexpr int MAX_HP = 2 - 2;
+	static constexpr int MAX_HP = 2;
 
 	// ÉTÉCÉY
 	static constexpr float SCALE = 0.7f;

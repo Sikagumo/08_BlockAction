@@ -239,6 +239,10 @@ void GameScene::CollisionStageToPlayer(void)
 		// プレイヤーに衝突座標を渡す
 		player_->CollisionStage(result.HitPosition);
 	}
+	else
+	{
+		player_->SetIsJump(true);
+	}
 }
 
 void GameScene::CollisionStageToRock(void)

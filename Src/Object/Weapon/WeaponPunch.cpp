@@ -19,30 +19,7 @@ void WeaponPunch::Draw(void)
 	bool isZRev = false;
 	int img = -1;
 
-	/*img = imgsZ_[cntAnimation_];
-
-
-	DrawBillboard3D(pos_, 0.5f, 0.5f,
-					IMG_SCALE, moveDir_.y,
-					img, true,
-					isXRev, isZRev);*/
-
-#pragma region 授業データ
-
-					// 横画像
-	if (moveDir_.x != 0.0f)
-	{
-		img = imgsX_[cntAnimation_];
-
-		if (moveDir_.x > 0.0f)
-		{
-			isXRev = true;
-		}
-	}
-
-
 	// 縦画像
-
 	if (moveDir_.z != 0.0f)
 	{
 		img = imgsZ_[cntAnimation_];
@@ -53,11 +30,22 @@ void WeaponPunch::Draw(void)
 		}
 	}
 
+	// 横画像
+	if (moveDir_.x != 0.0f)
+	{
+		img = imgsX_[cntAnimation_];
+
+		if (moveDir_.x > 0.0f)
+		{
+			isXRev = true;
+		}
+	}
+	
+
 	DrawBillboard3D(pos_, 0.5f, 0.5f,
 					IMG_SCALE, 0.0,
 					img, true,
 					isXRev, isZRev);
-#pragma endregion
 
 	// スプライトアニメーションカウンタ
 	cntAnimation_++;

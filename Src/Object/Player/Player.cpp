@@ -69,19 +69,19 @@ void Player::Init(const VECTOR& startPos)
 	// カメラ追尾対象に割り当て
 	SceneManager::GetInstance().GetCamera().SetFollow(this);
 
-
+	// パンチ状態割り当て
 	atkState_ = ATTACK_STATE::PUNCH;
 
+
+	// アニメーション初期化
+	InitAnim();
+
 	// 武器初期化
-	weaponPunch_ = new WeaponPunch(pos_);
-	weaponPunch_->Init();
+	InitWeapon();
+}
 
-	weaponAxe_ = new WeaponAxe(pos_);
-	weaponAxe_->Init();
-
-	// パンチ割り当て
-	weaponUse_ = weaponPunch_;
-
+void Player::InitAnim(void)
+{
 	// アニメーション
 	animController_ = new AnimationController(modelId_);
 	int max = static_cast<int>(ANIM_TYPE::MAX);
@@ -101,6 +101,21 @@ void Player::Init(const VECTOR& startPos)
 	// 初期アニメーション割り当て
 	animController_->Play(static_cast<int>(ANIM_TYPE::IDLE));
 }
+
+void Player::InitWeapon(void)
+{
+	// 武器初期化
+	weaponPunch_ = new WeaponPunch(pos_);
+	weaponPunch_->Init();
+
+	weaponAxe_ = new WeaponAxe(pos_);
+	weaponAxe_->Init();
+
+	// パンチ割り当て
+	weaponUse_ = weaponPunch_;
+}
+
+
 
 void Player::Update(void)
 {
@@ -179,10 +194,8 @@ void Player::Draw(void)
 {
 	COLOR_F color = COLOR_DEFAULT;
 	
-	if (state_ == STATE::ATTACK)
-	{
-		weaponUse_->Draw();
-	}
+	// 武器描画
+	weaponUse_->Draw();
 
 	if (state_ == STATE::KNOCKBACK)
 	{
@@ -201,7 +214,7 @@ void Player::Draw(void)
 
 
 #ifdef _DEBUG
-	DrawFormatString(0, 80, 0x0000FF, "pPos: %.1f, %.1f, %.1f, angleY:%.1f°", pos_.x, pos_.y, pos_.z, AsoUtility::Rad2Deg(angles_.y));
+	DrawFormatString(0, 80, 0x0000FF, "pPos: %.1f, %.1f, %.1f, angleY:%.1f°, isjump = %d", pos_.x, pos_.y, pos_.z, AsoUtility::Rad2Deg(angles_.y), isJump_);
 
 	// 当たり判定表示
 	DrawSphere3D(pos_, RADIUS, 8, 0xff00ff, 0xffffff, false);
@@ -283,6 +296,11 @@ void Player::SetDamage(int damage)
 void Player::SetPState(STATE state)
 {
 	ChangeState(state);
+}
+
+void Player::SetIsJump(bool flag)
+{
+	isJump_ = flag;
 }
 
 int Player::GetHp(void)const
@@ -596,6 +614,7 @@ void Player::ChangeKnockBack(void)
 
 void Player::ChangeAttack(void)
 {
+	// 武器を使用
 	weaponUse_->Use(pos_, moveDir_);
 
 	// アニメーション再生

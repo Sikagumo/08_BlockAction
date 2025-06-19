@@ -281,7 +281,7 @@ void EnemyBase::SetDamage(int damage)
 		hp_ = 0;
 		ChangeState(STATE::DEAD_REACT);
 	}
-	else
+	else if (state_ != STATE::ATTACK)
 	{
 		ChangeState(STATE::HIT_REACT);
 	}
@@ -502,6 +502,7 @@ void EnemyBase::DrawStandby(void)
 
 void EnemyBase::DrawAttack(void)
 {
+
 }
 
 void EnemyBase::DrawHitReact(void)
