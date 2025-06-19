@@ -1,4 +1,5 @@
 #pragma once
+#include "../Shot/ShotBase.h"
 #include <DxLib.h>
 #include <vector>
 class Player;
@@ -73,7 +74,7 @@ public:
 	static constexpr int DAMAGE_TERM = 5;
 
 	// 被ダメージ時の最大硬直時間
-	static constexpr float DAMAGE_MAX_TIME = 2.5f;
+	static constexpr float DAMAGE_MAX_TIME = 1.1f;
 
 
 	static constexpr float DEAD_MAX_TIME = 1.0f;
@@ -87,13 +88,31 @@ public:
 	virtual ~EnemyBase(void) = default;
 
 
-	void Init(TYPE type, int baseModel, int baseAtkEffectModel,
-			  Player& player);
+	/// <summary>
+	/// 初期化処理
+	/// </summary>
+	/// <param name="enemyType">敵の種類</param>
+	/// <param name="baseModel">敵のモデルハンドル</param>
+	/// <param name="player">参照するプレイヤー</param>
+	/// <param name="shotType">弾丸の種類</param>
+	/// <param name="baseAtkEffectModel">弾丸のモデルハンドル</param>
+	void Init(EnemyBase::TYPE enemyType, int baseModel,
+			  Player& player,
+			  ShotBase::TYPE shotType = ShotBase::TYPE::NONE, int baseAtkEffectModel = -1);
 
+	/// <summary>
+	/// 更新処理
+	/// </summary>
 	void Update(void);
 
+	/// <summary>
+	/// 描画処理
+	/// </summary>
 	void Draw(void);
 
+	/// <summary>
+	/// メモリ解放処理
+	/// </summary>
 	void Release(void);
 
 
@@ -142,6 +161,10 @@ protected:
 
 	// キャラの種類
 	TYPE type_;
+
+	// 弾の種類
+	ShotBase::TYPE shotType_;
+
 
 	// 行動状態
 	STATE state_;

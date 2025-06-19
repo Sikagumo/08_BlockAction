@@ -8,7 +8,9 @@
 #include "../../Object/AnimationController.h"
 #include "../Shot/ShotBase.h"
 #include "../Shot/ShotStaright.h"
+#include "../Shot/ShotRock.h"
 
+using SHOT_TYPE = ShotBase::TYPE;
 
 EnemyBase::EnemyBase(void)
 {
@@ -16,7 +18,10 @@ EnemyBase::EnemyBase(void)
 	attackTimeWait_ = 0.0f;
 }
 
-void EnemyBase::Init(TYPE type, int baseModel, int baseAtkEffectModel, Player& player)
+
+void EnemyBase::Init(EnemyBase::TYPE enemyType, int baseModel,
+					 Player& player,
+					 ShotBase::TYPE shotType, int baseAtkEffectModel)
 {
 	// モデルのロード
 	modelId_ = MV1DuplicateModel(baseModel);
@@ -25,8 +30,12 @@ void EnemyBase::Init(TYPE type, int baseModel, int baseAtkEffectModel, Player& p
 	modelIdAtkEffect_ = baseAtkEffectModel;
 
 
-	//　識別番号割り当て
-	type_ = type;
+	// 敵の識別番号割り当て
+	type_ = enemyType;
+
+	// 弾の種類割り当て
+	shotType_ = shotType;
+
 
 	player_ = &player;
 
@@ -49,10 +58,6 @@ void EnemyBase::Init(TYPE type, int baseModel, int baseAtkEffectModel, Player& p
 		// アニメーション割り当て
 		animController_->AddInFbx(i, SPEED_ANIM, i);
 	}
-
-	// 初期アニメーション割り当て
-	animController_->Play(static_cast<int>(ANIM_TYPE::IDLE));
-
 
 	// 待機状態化
 	ChangeState(STATE::STANDBY);
@@ -144,8 +149,12 @@ void EnemyBase::Draw(void)
 		MV1DrawModel(modelId_);
 
 #ifdef _DEBUG
+		VECTOR pos = pos_;
+
+		pos.y += (colRad_ / 2.0f);
+
 		// 当たり判定表示
-		DrawSphere3D(pos_, colRad_, 8, 0xffff00, 0xffffff, false);
+		DrawSphere3D(pos, colRad_, 8, 0xffff00, 0xffffff, false);
 #endif
 	}
 
@@ -220,13 +229,13 @@ void EnemyBase::ChangeState(STATE state)
 	{
 		case STATE::STANDBY:
 		{
-
+			ChangeStandby();
 		}
 		break;
 
 		case STATE::ATTACK:
 		{
-			
+			ChangeAttack();
 		}
 		break;
 
@@ -358,15 +367,19 @@ void EnemyBase::Move(void)
 	if (pos_.x > BlockManager::WORLD_SIZE.x) pos_.x = BlockManager::WORLD_SIZE.x;
 	if (pos_.z > BlockManager::WORLD_SIZE.z) pos_.z = BlockManager::WORLD_SIZE.z;
 
+	// 位置調整
+	VECTOR pos = pos_;
+	pos.y -= (colRad_ / 2.0f);
+
 	// 位置割り当て
-	MV1SetPosition(modelId_, pos_);
+	MV1SetPosition(modelId_, pos);
 }
 
 void EnemyBase::SetSpawnPosition(void)
 {
 	// ワールドの中心
 	VECTOR worldPos = { (BlockManager::WORLD_SIZE.x / 2.0f),
-					  0.0f,
+					  (colRad_ / 2.0f),
 					  (BlockManager::WORLD_SIZE.z / 2.0f)};
 
 	// 平均半径
@@ -436,13 +449,13 @@ void EnemyBase::ChangeEnd(void)
 
 void EnemyBase::UpdateStandby(void)
 {
-	// 被ダメージアニメーション再生
+	// 待機アニメーション再生
 	animController_->Play(static_cast<int>(ANIM_TYPE::IDLE));
 }
 
 void EnemyBase::UpdateAttack(void)
 {
-	// 被ダメージアニメーション再生
+	// 攻撃アニメーション再生
 	animController_->Play(static_cast<int>(ANIM_TYPE::ATTACK), false);
 }
 
@@ -453,6 +466,9 @@ void EnemyBase::UpdateHitReact(void)
 	damageCnt_++;
 
 	damageTime_ -= delta;
+
+	// プレイヤー向き追尾
+	LookPlayerRotate();
 
 	if (damageTime_ < 0.0f &&
 		animController_->IsEnd())
@@ -492,26 +508,22 @@ void EnemyBase::DrawHitReact(void)
 {
 	color_ = COLOR_DEFAULT;
 
+	// 点滅して描画
 	if ((damageCnt_ % DAMAGE_TERM) == 0)
 	{
 		color_ = COLOR_DAMAGE;
 	}
-
-	// 被ダメージアニメーション再生
-	animController_->Play(static_cast<int>(ANIM_TYPE::HIT_REACT), false);
 }
 
 void EnemyBase::DrawDeadReact(void)
 {
 	color_ = COLOR_DEFAULT;
 
+	// 点滅して描画
 	if ((damageCnt_ % DAMAGE_TERM) == 0)
 	{
 		color_ = COLOR_DAMAGE;
 	}
-
-	// 被ダメージアニメーション再生
-	animController_->Play(static_cast<int>(ANIM_TYPE::DEATH), false);
 }
 
 
@@ -551,14 +563,33 @@ ShotBase* EnemyBase::GetValidShot(void)
 	size_t size = shots_.size();
 	for (int i = 0; i < size; i++)
 	{
-		// 未使用弾丸があるときは再使用するs
+		// 未使用弾丸があるときは再使用する
 		if (!shots_[i]->GetIsAlive())
 		{
 			return shots_[i];
 		}
 	}
 
-	ShotBase* shot = new ShotStaright(ShotBase::TYPE::STRAIGHT, modelIdAtkEffect_);
+	if (shotType_ == SHOT_TYPE::NONE)
+	{
+		// 弾の種類が未割当時はNULLを返す
+		return nullptr;
+	}
+
+	
+	// 弾の生成
+	ShotBase* shot = {};
+
+	if (shotType_ == SHOT_TYPE::STRAIGHT)
+	{
+		shot = new ShotStaright(shotType_, modelIdAtkEffect_);
+	}
+	
+	if (shotType_ == SHOT_TYPE::ROCK)
+	{
+		shot = new ShotRock(shotType_, modelIdAtkEffect_);
+	}
+	
 
 	// リストに格納
 	shots_.push_back(shot);

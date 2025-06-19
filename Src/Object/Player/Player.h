@@ -81,9 +81,6 @@ public:
 	// リスポーンする位置
 	static constexpr float RESPAWN_POS_Y = 800.0f;
 
-	// リスポーン判定する位置
-	static constexpr float RESPAWN_POS_Y_CHECK = -1500.0f;
-
 	// 標準の自己発光色
 	static constexpr COLOR_F COLOR_EMI_DEFAULT = { 0.5f, 0.5f, 0.5f, 0.5f };
 
@@ -91,14 +88,14 @@ public:
 	static constexpr int MAX_HP = 5; // 最大HP
 
 	// 移動スピード
-	static constexpr float SPEED_MOVE = 12.5f;
+	static constexpr float SPEED_MOVE = 17.5f;
 
 	// 吹っ飛ばされる力
 	static constexpr float KNOCK_POWER = 20.0f;
 
 
 	// アニメーション速度
-	static constexpr float SPEED_ANIM = 30.0f;
+	static constexpr float SPEED_ANIM = 32.5f;
 
 	// ノックバック速度
 	static constexpr float SPEED_KNOCKBACK = 10.0f;
@@ -189,28 +186,34 @@ public:
 	/// </summary>
 	void SetPState(STATE state);
 
+
 	/// <summary>
 	/// 現在HP取得
 	/// </summary>
-	int GetHp(void);
+	int GetHp(void)const;
 
 	/// <summary>
 	/// 現在の状態を取得
 	/// </summary>
-	Player::STATE GetPState(void);
+	Player::STATE GetPState(void)const;
 	
 	/// <summary>
 	/// 現在の攻撃状態を取得
 	/// </summary>
-	Player::ATTACK_STATE GetAttackState(void);
+	Player::ATTACK_STATE GetAttackState(void)const;
 
 	/// <summary>
 	/// 無敵状態か否か
 	/// </summary>
 	/// <returns></returns>
-	bool IsInvincive(void);
+	bool IsInvincive(void)const;
 
+	/// <summary>
+	/// 使用している武器を取得
+	/// </summary>
+	/// <returns></returns>
 	WeaponBase& GetUseWepon(void)const;
+
 
 private:
 

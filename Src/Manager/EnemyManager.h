@@ -3,6 +3,8 @@
 #include <vector>
 #include <string>
 #include "../Application.h"
+#include "../Object/Enemy/EnemyBase.h"
+#include "../Object/Shot/ShotBase.h"
 class EnemyBase;
 class Player;
 
@@ -30,11 +32,10 @@ public:
 
 
 	// 生成時間
-	static constexpr float SPAWN_WAVE_01  = 0.30f;
-	static constexpr float SPAWN_WAVE_02  = 0.40f;
-	static constexpr float SPAWN_INTERVAL_GIANT  = 2.5f;
+	static constexpr float SPAWN_WAVE_01  = 3.0f;
+	static constexpr float SPAWN_WAVE_02  = 4.0f;
 
-	static constexpr float WAVE_TIME_STATE = 0.85f;
+	static constexpr float WAVE_TIME_STATE = 12.5f;
 
 
 
@@ -72,7 +73,7 @@ private:
 	std::map<int, int> modelIdsEnemy_;
 
 	// エフェクトのモデルハンドルID
-	std::vector<int> modelIdsAtkEffect_;
+	std::map<int, int> modelIdsAtkEffect_;
 
 
 	// プレイヤー(参照)
@@ -95,6 +96,11 @@ private:
 	void UpdateWave02(void);
 	void UpdateWave03(void);
 	void UpdateWaveEnd(void);
+
+	/// <summary>
+	/// 敵の読み込み処理
+	/// </summary>
+	void LoadEnemy(void);
 
 	/// <summary>
 	/// 敵生成処理

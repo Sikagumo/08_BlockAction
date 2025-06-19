@@ -8,7 +8,7 @@ class Enemy_Wizard : public EnemyBase
 public:
 
 	// 最大HP
-	static constexpr int MAX_HP = 2-2;
+	static constexpr int MAX_HP = 2 - 2;
 
 	// サイズ
 	static constexpr float SCALE = 0.7f;
@@ -52,4 +52,5 @@ protected:
 	// 状態別更新
 	void UpdateStandby(void)override;
 	void UpdateAttack(void)override;
+	void UpdateHitReact(void)override;
 };

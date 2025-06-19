@@ -8,8 +8,9 @@ public:
 	// ’e‚Ìí—Ş
 	enum class TYPE
 	{
-		STRAIGHT, // ’¼i’e
-		ROCK	  // Î
+		NONE = -1, // –³Œø
+		STRAIGHT,  // ’¼i’e
+		ROCK	   // Î
 	};
 
 	
@@ -79,6 +80,12 @@ public:
 	/// </summary>
 	void SetIsAlive(bool isAlive);
 
+	/// <summary>
+	/// Õ“Ëˆ—
+	/// </summary>
+	/// <param name="pos">Õ“ËˆÊ’u</param>
+	virtual void SetCollisionStage(const VECTOR& pos);
+
 
 protected:
 
@@ -107,7 +114,13 @@ protected:
 	float aliveTime_;
 
 	// ’e‚ÌÕ“Ë”»’è—p”¼Œa
-	float collisionRadius_;
+	float colRad_;
+
+
+	/// <summary>
+	/// ˆÚ“®ˆ—
+	/// </summary>
+	virtual void ProcessMove(void);
 
 
 	/// <summary>

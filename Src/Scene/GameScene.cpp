@@ -178,9 +178,13 @@ void GameScene::Release(void)
 void GameScene::Collision(void)
 {
 	// ステージブロックとプレイヤーの衝突
-	CollisionStage();
+	CollisionStageToPlayer();
 
-	CollisionEnemy();
+	// ステージブロックと敵弾の衝突
+	CollisionStageToRock();
+
+	// プレイヤーと敵の衝突
+	CollisionEnemyToPlayer();
 
 	// 敵とプレイヤーの攻撃の衝突
 	CollisionWeapon();
@@ -211,19 +215,19 @@ void GameScene::ProcessGameEnd(void)
 
 }
 
-void GameScene::CollisionStage(void)
+void GameScene::CollisionStageToPlayer(void)
 {
 	// ステージブロックとプレイヤーの衝突
 	VECTOR playerPos = player_->GetPos();
 
 	// 線分の上座標
 	VECTOR topPos = playerPos;
-	topPos.y	  = (playerPos.y + (Player::COLLISION_LEN * 2.0f));
+	topPos.y	  += (Player::COLLISION_LEN * 2.0f);
 	lineTopPos_   = topPos;
 
 	// 線分の下座標
 	VECTOR downPos = playerPos;
-	downPos.y	   = (playerPos.y - Player::COLLISION_LEN);
+	downPos.y	   -= Player::COLLISION_LEN;
 	lineDownPos_   = downPos;
 
 	// 線分とブロックモデルの衝突判定
@@ -237,7 +241,51 @@ void GameScene::CollisionStage(void)
 	}
 }
 
-void GameScene::CollisionEnemy(void)
+void GameScene::CollisionStageToRock(void)
+{
+	// 敵の情報を取得
+	std::map<int, EnemyBase*> enemys = enemyManager_->GetEnemys();
+
+	for (auto& enemy : enemys)
+	{
+		std::vector<ShotBase*> shot = enemy.second->GetEShots();
+
+		int size = shot.size();
+		for (int i = 0; i < size; i++)
+		{
+			VECTOR shotPos = shot[i]->GetPos();
+			float shotRad = shot[i]->GetColRad();
+
+			// 石弾出ない時・弾丸が無効時は、スキップ
+			if (shot[i]->GetType() != ShotBase::TYPE::ROCK ||
+				!shot[i]->GetIsAlive())
+			{
+				continue;
+			}
+
+			
+			// 線分の上座標
+			VECTOR topPos = shotPos;
+			topPos.y += (shotRad * 2.0f);
+
+			// 線分の下座標
+			VECTOR downPos = shotPos;
+			downPos.y -= shotRad;
+
+
+			// 線分とブロックモデルの衝突判定
+			MV1_COLL_RESULT_POLY result;
+
+			if (blockManager_->IsCollisionLine(topPos, downPos, &result))
+			{
+				// 石弾に衝突座標を渡す
+				shot[i]->SetCollisionStage(result.HitPosition);
+			}
+		}
+	}
+}
+
+void GameScene::CollisionEnemyToPlayer(void)
 {
 	// エネミーとプレイヤーの衝突判定
 	VECTOR pPos = player_->GetPos();

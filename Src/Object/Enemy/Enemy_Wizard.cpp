@@ -44,9 +44,6 @@ void Enemy_Wizard::SetParam(void)
 
 void Enemy_Wizard::ChangeStandby(void)
 {
-	// 状態遷移
-	ChangeState(STATE::STANDBY);
-
 	// 攻撃間隔初期化
 	attackTimeWait_ = ATTACK_TERM;
 
@@ -57,9 +54,6 @@ void Enemy_Wizard::ChangeStandby(void)
 
 void Enemy_Wizard::ChangeAttack(void)
 {
-	// 状態遷移
-	ChangeState(STATE::ATTACK);
-
 	// 攻撃アニメーション再生
 	animController_->Play(static_cast<int>(ANIM_TYPE::ATTACK), false);
 
@@ -78,7 +72,7 @@ void Enemy_Wizard::UpdateStandby(void)
 	if (attackTimeWait_ < 0.0f)
 	{
 		// 攻撃状態に遷移
-		ChangeAttack();
+		ChangeState(STATE::ATTACK);
 	}
 
 	// プレイヤー向き追尾
@@ -108,6 +102,29 @@ void Enemy_Wizard::UpdateAttack(void)
 	if (animController_->IsEnd())
 	{
 		// アニメーション終了時、状態遷移
-		ChangeStandby();
+		ChangeState(STATE::STANDBY);
+	}
+}
+
+void Enemy_Wizard::UpdateHitReact(void)
+{
+	float delta = SceneManager::GetInstance().GetDeltaTime();
+
+	// 攻撃有効時間減少
+	attackTimeWait_ -= delta;
+
+
+	damageCnt_++;
+
+	damageTime_ -= delta;
+
+	// プレイヤー向き追尾
+	LookPlayerRotate();
+
+	if (damageTime_ < 0.0f &&
+		animController_->IsEnd())
+	{
+		// 状態遷移
+		ChangeState(STATE::STANDBY);
 	}
 }

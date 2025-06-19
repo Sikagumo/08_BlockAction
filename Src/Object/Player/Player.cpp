@@ -285,22 +285,22 @@ void Player::SetPState(STATE state)
 	ChangeState(state);
 }
 
-int Player::GetHp(void)
+int Player::GetHp(void)const
 {
 	return hp_;
 }
 
-Player::STATE Player::GetPState(void)
+Player::STATE Player::GetPState(void)const
 {
 	return state_;
 }
 
-Player::ATTACK_STATE Player::GetAttackState(void)
+Player::ATTACK_STATE Player::GetAttackState(void)const
 {
 	return atkState_;
 }
 
-bool Player::IsInvincive(void)
+bool Player::IsInvincive(void)const
 {
 	return (state_ == STATE::KNOCKBACK
 		 || state_ == STATE::DEAD
@@ -490,7 +490,7 @@ void Player::ProcessAttack(void)
 
 void Player::ProcessRespawn(void)
 {
-	if (pos_.y < RESPAWN_POS_Y_CHECK)
+	if (pos_.y < GameScene::POS_LIMIT_Y)
 	{
 		VECTOR pos = posStart_;
 
@@ -591,7 +591,7 @@ void Player::ChangeKnockBack(void)
 	knockCnt_ = 0;
 
 	// アニメーション再生
-	animController_->Play(static_cast<int>(ANIM_TYPE::DUCK), false);
+	animController_->Play(static_cast<int>(ANIM_TYPE::HIT_REACT), false);
 }
 
 void Player::ChangeAttack(void)

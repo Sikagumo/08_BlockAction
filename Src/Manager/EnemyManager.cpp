@@ -15,6 +15,7 @@
 
 // 敵の種類
 using ENEMY_TYPE = EnemyBase::TYPE;
+using SHOT_TYPE = ShotBase::TYPE;
 
 
 EnemyManager::EnemyManager(Player* player)
@@ -32,24 +33,56 @@ void EnemyManager::Init(void)
 
 	wave_ = WAVE::WAVE01;
 
-	// 各敵モデルをロード
+	// 敵読み込み処理
+	LoadEnemy();
+}
+
+void EnemyManager::LoadEnemy(void)
+{
+	// 各モデルをロード
 	int type;
 
+	// デーモン
 	type = static_cast<int>(ENEMY_TYPE::DEMON);
 	modelIdsEnemy_.emplace(type, MV1LoadModel(PATH_DEMON.c_str()));
 
+	// ウィザード
 	type = static_cast<int>(ENEMY_TYPE::WIZARD);
 	modelIdsEnemy_.emplace(type, MV1LoadModel(PATH_WIZARD.c_str()));
 
+	// ジャイアント
 	type = static_cast<int>(ENEMY_TYPE::GIANT);
 	modelIdsEnemy_.emplace(type, MV1LoadModel(PATH_GIANT.c_str()));
 
+
 	// 火炎弾
-	modelIdsAtkEffect_.emplace_back(MV1LoadModel(PATH_FIRE.c_str()));
+	type = static_cast<int>(SHOT_TYPE::STRAIGHT);
+	modelIdsAtkEffect_.emplace(type, MV1LoadModel(PATH_FIRE.c_str()));
 
 	// 岩石
-	modelIdsAtkEffect_.emplace_back(MV1LoadModel(PATH_ROCK.c_str()));
+	type = static_cast<int>(SHOT_TYPE::ROCK);
+	modelIdsAtkEffect_.emplace(type, MV1LoadModel(PATH_ROCK.c_str()));
+
+#ifdef _DEBUG
+
+	for (auto& enemyId : modelIdsEnemy_)
+	{
+		if (enemyId.second == -1)
+		{
+			OutputDebugString("\n敵弾丸モデルが未割当の部分があります。(；；)\n\n");
+		}
+	}
+
+	for (auto& atkId : modelIdsAtkEffect_)
+	{
+		if (atkId.second == -1)
+		{
+			OutputDebugString("\n敵弾丸モデルが未割当の部分があります。(；；)\n\n");
+		}
+	}
+#endif
 }
+
 
 void EnemyManager::Update(void)
 {
@@ -140,10 +173,9 @@ void EnemyManager::Release(void)
 	
 
 	// 敵弾解放
-	int size = modelIdsAtkEffect_.size();
-	for (int i = 0; i < size; i++)
+	for (auto& handle : modelIdsAtkEffect_)
 	{
-		MV1DeleteModel(modelIdsAtkEffect_[i]);
+		MV1DeleteModel(handle.second);
 	}
 	modelIdsAtkEffect_.clear();
 }
@@ -201,16 +233,40 @@ void EnemyManager::UpdateWave01(void)
 
 void EnemyManager::UpdateWave02(void)
 {
-	if (timeSpawn_ < 0.0f)
+	if (timeWave_ < WAVE_TIME_STATE)
 	{
-		timeSpawn_ = SPAWN_WAVE_02;
+		if (timeSpawn_ < 0.0f)
+		{
+			timeSpawn_ = SPAWN_WAVE_02;
 
-		SpawnEnemy(static_cast<int>(ENEMY_TYPE::WIZARD));
+			// ウィザード生成
+			SpawnEnemy(static_cast<int>(ENEMY_TYPE::WIZARD));
+		}
 	}
 
-	if (timeWave_ >= WAVE_TIME_STATE)
+	else
 	{
-		ChangeWave();
+		bool isKnock = true;
+		for (auto& enemy : enemys_)
+		{
+			if (enemy.second->GetIsActive())
+			{
+				// 1体でも撃破されていないなら、false
+				isKnock = false;
+				break;
+			}
+		}
+
+		// 全撃破時、次のウェーブに遷移
+		if (isKnock)
+		{
+			timeWave_ = 0.0f;
+
+			ChangeWave();
+
+			// ジャイアント1体生成
+			SpawnEnemy(static_cast<int>(ENEMY_TYPE::GIANT));
+		}
 	}
 }
 
@@ -233,10 +289,12 @@ void EnemyManager::UpdateWave03(void)
 	}
 }
 
+
 void EnemyManager::UpdateWaveEnd(void)
 {
 
 }
+
 
 void EnemyManager::SpawnEnemy(int type)
 {
@@ -244,7 +302,11 @@ void EnemyManager::SpawnEnemy(int type)
 
 	ENEMY_TYPE eType = static_cast<ENEMY_TYPE>(type);
 
+	// 弾のハンドル
 	int shotId = -1;
+
+	// 弾丸の種類
+	SHOT_TYPE shotType = SHOT_TYPE::NONE;
 
 
 	// 敵生成
@@ -260,15 +322,29 @@ void EnemyManager::SpawnEnemy(int type)
 		{
 			enemy = new Enemy_Wizard();
 
-			shotId = modelIdsAtkEffect_[0];
+			shotType = SHOT_TYPE::STRAIGHT;
+
+			int id = static_cast<int>(shotType);
+			shotId = modelIdsAtkEffect_[id];
+		}
+		break;
+		
+		case ENEMY_TYPE::GIANT:
+		{
+			enemy = new Enemy_Giant();
+
+			shotType = SHOT_TYPE::ROCK;
+
+			int id = static_cast<int>(shotType);
+			shotId = modelIdsAtkEffect_[id];
 		}
 		break;
 	}
 
 	// 敵初期化
-	enemy->Init(eType,
-				modelIdsEnemy_[type],
-				shotId, *player_);
+	enemy->Init(eType, modelIdsEnemy_[type],
+				*player_,
+				shotType, shotId);
 
 	// 敵を格納
 	enemys_.emplace(spawnCount_, enemy);

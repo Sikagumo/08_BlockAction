@@ -8,10 +8,10 @@ class Enemy_Demon : public EnemyBase
 public:
 
 	// 最大HP
-	static constexpr int MAX_HP = 2 - 2;
+	static constexpr int MAX_HP = 3 - 3;
 
 	// 移動速度
-	static constexpr float SPEED = 3.0f;
+	static constexpr float SPEED = 3.75f;
 
 	// サイズ
 	static constexpr float SCALE = 0.75f;

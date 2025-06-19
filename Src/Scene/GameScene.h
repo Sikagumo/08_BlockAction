@@ -35,6 +35,9 @@ public:
 	// 重力
 	static constexpr float GRAVITY = 0.8f;
 
+	// 縦位置のY軸制限値
+	static constexpr float POS_LIMIT_Y = -1500.0f;
+
 
 	/// <summary>
 	/// デフォルトコンストラクタ
@@ -116,12 +119,17 @@ private:
 	/// <summary>
 	/// ステージブロックとプレイヤーの衝突
 	/// </summary>
-	void CollisionStage(void);
+	void CollisionStageToPlayer(void);
+	
+	/// <summary>
+	/// ステージブロックと敵の石弾の衝突
+	/// </summary>
+	void CollisionStageToRock(void);
 
 	/// <summary>
 	/// 敵とプレイヤーの衝突
 	/// </summary>
-	void CollisionEnemy(void);
+	void CollisionEnemyToPlayer(void);
 	
 	/// <summary>
 	/// 敵とプレイヤーの攻撃の衝突
