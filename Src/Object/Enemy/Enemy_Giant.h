@@ -21,7 +21,7 @@ public:
 	static constexpr float SPAWN_RAMGE = 0.75f;
 
 	// UŒ‚ŠÔŠu
-	static constexpr float ATTACK_TERM = 1.0f;
+	static constexpr float ATTACK_TERM = 1.5f;
 
 	// UŒ‚—LŒøŠÔ
 	static constexpr float ATTACK_ATIVE = 0.185f;
